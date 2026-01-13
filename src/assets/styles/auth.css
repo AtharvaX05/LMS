@@ -1,0 +1,147 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #003D82 0%, #005BA3 100%);
+  padding: 20px;
+}
+
+.auth-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 61, 130, 0.2);
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #003D82;
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Form styles */
+.auth-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-box label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.auth-box input:focus {
+  outline: none;
+  border-color: #003D82;
+  box-shadow: 0 0 0 3px rgba(0, 61, 130, 0.1);
+}
+
+.auth-box button {
+  padding: 12px;
+  background-color: #003D82;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-box button:hover {
+  background-color: #002a59;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 61, 130, 0.3);
+}
+
+.auth-box button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error message */
+.error-message {
+  background-color: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* Link styles */
+.auth-box a {
+  color: #003D82;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.auth-box a:hover {
+  color: #005BA3;
+  text-decoration: underline;
+}
+
+/* Demo info box */
+.demo-info {
+  background: #f0f7ff;
+  border: 1px solid #c5e3ff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+.demo-info strong {
+  color: #003D82;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.demo-info code {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+}
+
+@media (max-width: 640px) {
+  .auth-box {
+    padding: 30px 20px;
+  }
+
+  .auth-header h1 {
+    font-size: 24px;
+  }
+}
