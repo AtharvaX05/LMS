@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
-import { getLSFIData, calculateLSFI } from '../services/lsfiService';
+// useLSFI Hook - Fixed to prevent score recalculation
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { getLSFIData } from '../services/lsfiService';
 
 interface LSFIState {
   score: number;
@@ -14,26 +15,22 @@ interface LSFIState {
 }
 
 export const useLSFI = (profileCompleted: boolean = false) => {
-  const [lsfi, setLSFI] = useState<LSFIState | null>(profileCompleted ? {
-    score: 85,
-    status: 'Stable',
-    factors: {
-      affordabilityResilience: 88,
-      loanStructuralFairness: 75,
-      servicingIntegrity: 92,
-      paymentMomentum: 85,
-      externalStressSensitivity: 65,
-    },
-  } : null);
-
+  const [lsfi, setLSFI] = useState<LSFIState | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Prevent multiple fetches
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     if (!profileCompleted) {
       setLSFI(null);
+      hasFetched.current = false;
       return;
     }
+
+    // Only fetch once
+    if (hasFetched.current) return;
 
     const fetchData = async () => {
       try {
@@ -42,15 +39,14 @@ export const useLSFI = (profileCompleted: boolean = false) => {
 
         const data = await getLSFIData();
 
-        const score = calculateLSFI(data.factors);
-        const status =
-          score >= 80 ? 'Stable' : score >= 70 ? 'Monitor' : 'At Risk';
-
+        // Use the data directly from service
         setLSFI({
-          score,
-          status,
+          score: data.score,
+          status: data.status,
           factors: data.factors,
         });
+
+        hasFetched.current = true;
       } catch (err) {
         console.error('Failed to fetch LSFI data:', err);
         setError('Failed to fetch LSFI data');

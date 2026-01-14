@@ -1,3 +1,4 @@
+//lsfiService.ts - Fixed to return consistent data
 import apiClient from './api';
 
 interface LSFIData {
@@ -12,19 +13,23 @@ interface LSFIData {
   };
 }
 
-// Generate mock LSFI data for demo purposes
+// FIXED: Use fixed values instead of Math.random()
+const FIXED_MOCK_DATA: LSFIData = {
+  score: 85,
+  status: 'Stable',
+  factors: {
+    affordabilityResilience: 88,
+    loanStructuralFairness: 75,
+    servicingIntegrity: 92,
+    paymentMomentum: 85,
+    externalStressSensitivity: 65,
+  },
+};
+
+// Generate consistent mock LSFI data
 const generateMockLSFIData = (): LSFIData => {
-  return {
-    score: 85,
-    status: 'Stable',
-    factors: {
-      affordabilityResilience: Math.floor(50 + Math.random() * 50),
-      loanStructuralFairness: Math.floor(50 + Math.random() * 50),
-      servicingIntegrity: Math.floor(50 + Math.random() * 50),
-      paymentMomentum: Math.floor(50 + Math.random() * 50),
-      externalStressSensitivity: Math.floor(50 + Math.random() * 50),
-    },
-  };
+  // Return the same fixed data every time
+  return { ...FIXED_MOCK_DATA };
 };
 
 export const calculateLSFI = (factors: {
@@ -45,11 +50,25 @@ export const calculateLSFI = (factors: {
 
 export const getLSFIData = async (): Promise<LSFIData> => {
   try {
-    // Try to fetch from API, fall back to mock data if not available
-    const response = await apiClient.get('/lsfi');
-    return response.data;
+    // Try to fetch from API first
+    const response = await apiClient.get('/lsfi/score');
+    
+    // Map the database response to the expected format
+    const data = response.data;
+    return {
+      score: data.score || 85,
+      status: data.status || 'Stable',
+      factors: {
+        affordabilityResilience: data.debt_to_income || 88,
+        loanStructuralFairness: data.loan_diversity || 75,
+        servicingIntegrity: data.payment_history || 92,
+        paymentMomentum: data.income_stability || 85,
+        externalStressSensitivity: data.credit_utilization || 65,
+      },
+    };
   } catch (error) {
-    console.log('Using mock LSFI data');
+    console.log('API not available, using fixed mock LSFI data');
+    // Return consistent mock data instead of random values
     return generateMockLSFIData();
   }
 };
@@ -69,5 +88,28 @@ export const updateLSFIFactors = async (
       status,
       factors,
     };
+  }
+};
+
+// Optional: Add a function to manually trigger recalculation
+export const recalculateLSFI = async (): Promise<LSFIData> => {
+  try {
+    const response = await apiClient.post('/lsfi/calculate');
+    
+    const data = response.data;
+    return {
+      score: data.score,
+      status: data.status,
+      factors: {
+        affordabilityResilience: data.debt_to_income || 88,
+        loanStructuralFairness: data.loan_diversity || 75,
+        servicingIntegrity: data.payment_history || 92,
+        paymentMomentum: data.income_stability || 85,
+        externalStressSensitivity: data.credit_utilization || 65,
+      },
+    };
+  } catch (error) {
+    console.log('Recalculation not available');
+    return generateMockLSFIData();
   }
 };
